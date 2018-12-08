@@ -12,16 +12,6 @@
 #include "bits.h"
 #include "dht22.h"
 
-void timer0_hardware_init(){
-	
-	TCCR0A = 0;
-	/* Ligar fonte de clock: prescaler de 256*/
-	TCCR0B = SET(CS02);
-	/* Habilitação de IRQ: overflow */
-	TIMSK0 = SET(TOIE0);
-	
-}
-
 
 int main(void)
 {
