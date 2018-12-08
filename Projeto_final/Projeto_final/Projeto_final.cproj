@@ -127,6 +127,12 @@
     <Compile Include="bits.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="dht22.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="dht22.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lcd.c">
       <SubType>compile</SubType>
     </Compile>
