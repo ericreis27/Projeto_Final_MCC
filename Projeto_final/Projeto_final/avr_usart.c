@@ -63,13 +63,14 @@ static int usart_putchar(char c, FILE *fp){
 	return 0;
 }
 
+// Buffer circular na interrupção do Rx
+// UDR envia 1 byte, salva no buffer circular.
+// Novos dados vão sobre-escrevendo dados antigos quando atingem o tamanho limite do buffer.
+// Variáveis "cabeça" e "cauda" para identificar o começo e o fim do dado sendo lido.
 
-//ISR(USART_RX_vect){
-//
-//
-//
-//
-//}
+ISR(USART_RX_vect){
+	
+}
 //
 //ISR(USART_TX_vect){
 //
