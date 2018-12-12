@@ -19,8 +19,4 @@
 uint8_t start_dht22();
 void read_dht22(uint16_t *humidity, uint16_t *temperature);
 
-
-
-
-
 #endif /* DHT22_H_ */

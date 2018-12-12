@@ -124,6 +124,12 @@
     <Compile Include="avr_gpio.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="avr_usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="avr_usart.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="bits.h">
       <SubType>compile</SubType>
     </Compile>

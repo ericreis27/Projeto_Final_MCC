@@ -17,8 +17,7 @@ uint8_t start_dht22(){
 	if(!(DHT_PIN & (1 << DHT22_PIN))){
 		return 1;
 	}
-	else
-	{
+	else {
 		return 0;
 	}
 }
