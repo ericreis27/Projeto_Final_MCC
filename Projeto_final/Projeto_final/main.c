@@ -2,7 +2,7 @@
  * Projeto_final.c
  *
  * Created: 01/12/2018 08:27:49
- * Author : Eric
+ * Author : Eric e Jade
  */ 
 
 #include <avr/io.h>
@@ -13,6 +13,11 @@
 #include "dht22.h"
 #include "avr_usart.h"
 #include <avr/interrupt.h>
+
+#define SEND_TEMP	1
+#define RECV_TEMP	2
+#define SEND_HUM	3
+#define RECV_HUM	4
 
 uint16_t CRC16_2(uint8_t *buf, int len)
 {
@@ -56,35 +61,18 @@ uint16_t little_to_big(uint16_t input)
 int main(void)
 {
 	modbus_pkg_t tx_pkg;	 // Dados que serão enviados ao Modbus
-	modbus_pkg_t rx_pkg;	 // Dados que o Modbus me retornará (deverão ser os mesmos)
 	FILE* lcd = 0;
 	FILE* usart = 0;
+	uint8_t index = 0;
+	uint8_t * pkg_byte = (uint8_t *)&tx_pkg;	// Pkg_byte contém o endereço do pacote que foi enviado (vetor de bytes)
+	uint8_t state = SEND_TEMP;
 	uint16_t humidity = 0;
 	uint16_t temperature = 0;
-	inic_LCD_4bits();
-	lcd = inic_stream();
+	//inic_LCD_4bits();
+	//lcd = inic_stream();
 	usart = get_usart_stream();
 	USART_Init(B9600);
 	sei();
-	// Fazendo a transmissão dos dados
-	
-	tx_pkg.addr = 0x15;	
-	tx_pkg.cmd  = 0x01;
-	tx_pkg.reg  = 0x0500;	// Big Endian
-	tx_pkg.data = little_to_big(temperature);
-	tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
-	
-	// Checagem dos erros do pacote da temperatura
-	// ...
-	
-	tx_pkg.addr = 0x15;
-	tx_pkg.cmd  = 0x01;
-	tx_pkg.reg  = 0x0600;	// Big Endian
-	tx_pkg.data = little_to_big(humidity);
-	tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
-	
-	// Checagem dos erros do pacote da umidade
-	// ...
 	
 	//tempo calculado para timeout:
 	//   1200 inicial + 50 para leitura de low + 130 de espera até resposta + (120*40)
@@ -93,16 +81,78 @@ int main(void)
 	while (1) 
     {
 		if(start_dht22() == 1){
-			read_dht22(&humidity, &temperature);
+			read_dht22(&humidity, &temperature);	
 		}	
+		
+		switch(state){
+			
+		case SEND_TEMP:
+			// Preparando o pacote
+			tx_pkg.addr = 0x15;
+			tx_pkg.cmd  = 0x01;
+			tx_pkg.reg  = 0x0500;	// Big Endian
+			tx_pkg.data = little_to_big(temperature);
+			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+			
+			// Enviando o pacote
+			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
+			index = 0;
+			state = RECV_TEMP;
+			break;
+			
+		case RECV_TEMP:
+			
+			if(usart_buffer_has_data()){
+				if(pkg_byte[index] == usart_buffer_get_data()){
+					index++;
+					if(index == 8){
+						state = SEND_HUM;
+					}	
+				}
+				else{
+					// Vai acontecer alguma coisa se der erro
+				}
+			}
+			
+			break;
+
+		case SEND_HUM:
+			// Preparando o pacote
+			tx_pkg.addr = 0x15;
+			tx_pkg.cmd  = 0x01;
+			tx_pkg.reg  = 0x0600;	// Big Endian
+			tx_pkg.data = little_to_big(humidity);
+			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+		
+			// Enviando o pacote
+			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
+			index = 0;
+			state = RECV_HUM;
+			break;
+		
+		case RECV_HUM:
+			
+			if(usart_buffer_has_data()){
+				if(pkg_byte[index] == usart_buffer_get_data()){
+					index++;
+					if(index == 8){
+						state = SEND_TEMP;
+					}
+				}
+				else{
+					// Vai acontecer alguma coisa se der erro
+				}
+			}	
+			break;	
+		}
+		
+		
 		//mostra os valores de temperatura e umidade
 		//cmd_LCD(1,0);
 		//fprintf(lcd, "temp:%d,%d",(temperature/10),(temperature%10));
 		//cmd_LCD(0xC0, 0);
 		//fprintf(lcd, "hum:%d,%d",(humidity/10),(humidity%10));
-		fprintf(usart, "temp:%d,%d\r\n",(temperature/10),(temperature%10));
-		fprintf(usart, "hum:%d,%d\r\n",(humidity/10),(humidity%10));
-		_delay_ms(1000);
+
     }
 
 	//fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);		//envio do pacote
