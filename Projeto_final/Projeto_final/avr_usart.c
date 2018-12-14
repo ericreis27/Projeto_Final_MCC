@@ -12,6 +12,9 @@
 #include "bits.h"
 
 static int usart_putchar(char c, FILE *fp);
+static uint8_t buffer[16];
+static uint8_t head = 0;
+static uint8_t tail = 0;
 
 /* Stream init for printf  */
 FILE usart_str = FDEV_SETUP_STREAM(usart_putchar, NULL, _FDEV_SETUP_WRITE);
@@ -70,11 +73,36 @@ static int usart_putchar(char c, FILE *fp){
 
 ISR(USART_RX_vect){
 	
+buffer[head] = UDR0;            // Salva o valor recebido em rx no buffer
+	head++;
+	if(head == 16){
+		head = 0;
+	}
+	if(head == tail){
+		tail++;
+		if(tail == 16){
+			tail = 0;
+		}
+	}	
 }
-//
-//ISR(USART_TX_vect){
-//
-//
-//
-//
-//}
+
+uint8_t usart_buffer_has_data()
+{
+	if(tail != head){
+		return 1;
+	}
+	
+	return 0;
+}
+
+uint8_t usart_buffer_get_data()
+{
+	uint8_t aux;
+	aux = buffer[tail];
+	tail++;
+	
+	if(tail == 16)
+		tail = 0;
+	
+	return aux;	
+}
