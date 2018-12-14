@@ -92,32 +92,30 @@ int main(void)
 	uint8_t state = SEND_TEMP;
 	uint16_t humidity = 0;
 	uint16_t temperature = 0;
+	DDRB |= (1 << PB5);
+	
 	//inic_LCD_4bits();
 	//lcd = inic_stream();
 	usart = get_usart_stream();
 	USART_Init(B9600);
 	timer1_init();
 	sei();
-	
-	//tempo calculado para timeout:
-	//   1200 inicial + 50 para leitura de low + 130 de espera até resposta + (120*40)
-	//   tempo máximo de leitura do bit vezes a quantidade de bits = 6180 uS
-	//   topo 124, timer0, prescaler 1024
+
 	while (1) 
     {
-		if(start_dht22() == 1){
-			read_dht22(&humidity, &temperature);	
-		}	
-		
 		switch(state){
 			
 		case SEND_TEMP:
+			if(start_dht22() == 1){
+				read_dht22(&humidity, &temperature);
+			}
+			_delay_ms(1000);
 			// Preparando o pacote
 			tx_pkg.addr = 0x15;
 			tx_pkg.cmd  = 0x01;
 			tx_pkg.reg  = 0x0500;	// Big Endian
 			tx_pkg.data = little_to_big(temperature);
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 			
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
@@ -133,29 +131,30 @@ int main(void)
 					index++;
 					if(index == 8){
 						state = SEND_HUM;
-						
 					}	
 				}
 				else{
-					// Vai acontecer alguma coisa se der erro
+					
 				}
 			}
 			
 			// Se der timeout, é porquê demorou para receber o dado
 			if(timeout){
 				timeout_stop();
+				PORTB |= (1 << PB5);
 				state = SEND_HUM;
 			}
 			
 			break;
 
 		case SEND_HUM:
+			_delay_ms(1000);
 			// Preparando o pacote
 			tx_pkg.addr = 0x15;
 			tx_pkg.cmd  = 0x01;
 			tx_pkg.reg  = 0x0600;	// Big Endian
 			tx_pkg.data = little_to_big(humidity);
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 		
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
@@ -181,6 +180,7 @@ int main(void)
 			// Se der timeout, é porquê demorou para receber o dado
 			if(timeout){
 				timeout_stop();
+				PORTB |= (1 << PB5);
 				state = SEND_TEMP;
 			}
 			break;	

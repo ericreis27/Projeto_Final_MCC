@@ -3,31 +3,31 @@ Projeto_final.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000000e  00800100  00000546  000005da  2**0
+  0 .data         0000000e  00800100  0000057e  00000612  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000546  00000000  00000000  00000094  2**1
+  1 .text         0000057e  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000013  0080010e  0080010e  000005e8  2**0
+  2 .bss          00000013  0080010e  0080010e  00000620  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000005e8  2**0
+  3 .comment      00000030  00000000  00000000  00000620  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000618  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000650  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000000d0  00000000  00000000  00000658  2**0
+  5 .debug_aranges 000000d0  00000000  00000000  00000690  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00001301  00000000  00000000  00000728  2**0
+  6 .debug_info   000013b3  00000000  00000000  00000760  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000b03  00000000  00000000  00001a29  2**0
+  7 .debug_abbrev 00000b36  00000000  00000000  00001b13  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000086e  00000000  00000000  0000252c  2**0
+  8 .debug_line   000008fc  00000000  00000000  00002649  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000018c  00000000  00000000  00002d9c  2**2
+  9 .debug_frame  0000018c  00000000  00000000  00002f48  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000060d  00000000  00000000  00002f28  2**0
+ 10 .debug_str    0000061c  00000000  00000000  000030d4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000006d3  00000000  00000000  00003535  2**0
+ 11 .debug_loc    0000077e  00000000  00000000  000036f0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000a0  00000000  00000000  00003c08  2**0
+ 12 .debug_ranges 000000a0  00000000  00000000  00003e6e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -44,7 +44,7 @@ Disassembly of section .text:
   20:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   24:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   28:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  2c:	0c 94 27 02 	jmp	0x44e	; 0x44e <__vector_11>
+  2c:	0c 94 43 02 	jmp	0x486	; 0x486 <__vector_11>
   30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   38:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -72,7 +72,7 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e6 e4       	ldi	r30, 0x46	; 70
+  7a:	ee e7       	ldi	r30, 0x7E	; 126
   7c:	f5 e0       	ldi	r31, 0x05	; 5
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
@@ -95,7 +95,7 @@ Disassembly of section .text:
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
   9a:	0e 94 5e 01 	call	0x2bc	; 0x2bc <main>
-  9e:	0c 94 a1 02 	jmp	0x542	; 0x542 <_exit>
+  9e:	0c 94 bd 02 	jmp	0x57a	; 0x57a <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -600,470 +600,508 @@ int main(void)
 	uint16_t temperature = 0;
  2d4:	1c 86       	std	Y+12, r1	; 0x0c
  2d6:	1b 86       	std	Y+11, r1	; 0x0b
+	DDRB |= (1 << PB5);
+ 2d8:	25 9a       	sbi	0x04, 5	; 4
+	
 	//inic_LCD_4bits();
 	//lcd = inic_stream();
 	usart = get_usart_stream();
- 2d8:	0e 94 53 00 	call	0xa6	; 0xa6 <get_usart_stream>
- 2dc:	7c 01       	movw	r14, r24
+ 2da:	0e 94 53 00 	call	0xa6	; 0xa6 <get_usart_stream>
+ 2de:	7c 01       	movw	r14, r24
 	USART_Init(B9600);
- 2de:	87 e6       	ldi	r24, 0x67	; 103
- 2e0:	90 e0       	ldi	r25, 0x00	; 0
- 2e2:	0e 94 56 00 	call	0xac	; 0xac <USART_Init>
+ 2e0:	87 e6       	ldi	r24, 0x67	; 103
+ 2e2:	90 e0       	ldi	r25, 0x00	; 0
+ 2e4:	0e 94 56 00 	call	0xac	; 0xac <USART_Init>
 	timer1_init();
- 2e6:	0e 94 18 01 	call	0x230	; 0x230 <timer1_init>
+ 2e8:	0e 94 18 01 	call	0x230	; 0x230 <timer1_init>
 	sei();
- 2ea:	78 94       	sei
+ 2ec:	78 94       	sei
 	modbus_pkg_t tx_pkg;	 // Dados que serão enviados ao Modbus
 	FILE* lcd = 0;
 	FILE* usart = 0;
 	uint8_t index = 0;
 	uint8_t * pkg_byte = (uint8_t *)&tx_pkg;	// Pkg_byte contém o endereço do pacote que foi enviado (vetor de bytes)
 	uint8_t state = SEND_TEMP;
- 2ec:	11 e0       	ldi	r17, 0x01	; 1
+ 2ee:	11 e0       	ldi	r17, 0x01	; 1
 int main(void)
 {
 	modbus_pkg_t tx_pkg;	 // Dados que serão enviados ao Modbus
 	FILE* lcd = 0;
 	FILE* usart = 0;
 	uint8_t index = 0;
- 2ee:	51 2c       	mov	r5, r1
-			}
-			
-			// Se der timeout, é porquê demorou para receber o dado
-			if(timeout){
-				timeout_stop();
-				state = SEND_HUM;
- 2f0:	0f 2e       	mov	r0, r31
- 2f2:	f3 e0       	ldi	r31, 0x03	; 3
- 2f4:	6f 2e       	mov	r6, r31
- 2f6:	f0 2d       	mov	r31, r0
-			
+ 2f0:	51 2c       	mov	r5, r1
 			break;
 
 		case SEND_HUM:
+			_delay_ms(1000);
 			// Preparando o pacote
 			tx_pkg.addr = 0x15;
- 2f8:	0f 2e       	mov	r0, r31
- 2fa:	f5 e1       	ldi	r31, 0x15	; 21
- 2fc:	9f 2e       	mov	r9, r31
- 2fe:	f0 2d       	mov	r31, r0
+ 2f2:	0f 2e       	mov	r0, r31
+ 2f4:	f5 e1       	ldi	r31, 0x15	; 21
+ 2f6:	9f 2e       	mov	r9, r31
+ 2f8:	f0 2d       	mov	r31, r0
 			tx_pkg.cmd  = 0x01;
- 300:	01 e0       	ldi	r16, 0x01	; 1
+ 2fa:	01 e0       	ldi	r16, 0x01	; 1
 			tx_pkg.reg  = 0x0600;	// Big Endian
- 302:	0f 2e       	mov	r0, r31
- 304:	a1 2c       	mov	r10, r1
- 306:	f6 e0       	ldi	r31, 0x06	; 6
- 308:	bf 2e       	mov	r11, r31
- 30a:	f0 2d       	mov	r31, r0
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+ 2fc:	0f 2e       	mov	r0, r31
+ 2fe:	a1 2c       	mov	r10, r1
+ 300:	f6 e0       	ldi	r31, 0x06	; 6
+ 302:	bf 2e       	mov	r11, r31
+ 304:	f0 2d       	mov	r31, r0
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 		
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
 			state = RECV_HUM;
- 30c:	68 94       	set
- 30e:	77 24       	eor	r7, r7
- 310:	72 f8       	bld	r7, 2
-			
-		case SEND_TEMP:
+ 306:	68 94       	set
+ 308:	77 24       	eor	r7, r7
+ 30a:	72 f8       	bld	r7, 2
+			}
+			_delay_ms(1000);
 			// Preparando o pacote
 			tx_pkg.addr = 0x15;
 			tx_pkg.cmd  = 0x01;
 			tx_pkg.reg  = 0x0500;	// Big Endian
- 312:	0f 2e       	mov	r0, r31
- 314:	c1 2c       	mov	r12, r1
- 316:	f5 e0       	ldi	r31, 0x05	; 5
- 318:	df 2e       	mov	r13, r31
- 31a:	f0 2d       	mov	r31, r0
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+ 30c:	0f 2e       	mov	r0, r31
+ 30e:	c1 2c       	mov	r12, r1
+ 310:	f5 e0       	ldi	r31, 0x05	; 5
+ 312:	df 2e       	mov	r13, r31
+ 314:	f0 2d       	mov	r31, r0
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 			
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
 			state = RECV_TEMP;
- 31c:	68 94       	set
- 31e:	88 24       	eor	r8, r8
- 320:	81 f8       	bld	r8, 1
-	//   1200 inicial + 50 para leitura de low + 130 de espera até resposta + (120*40)
-	//   tempo máximo de leitura do bit vezes a quantidade de bits = 6180 uS
-	//   topo 124, timer0, prescaler 1024
+ 316:	68 94       	set
+ 318:	88 24       	eor	r8, r8
+ 31a:	81 f8       	bld	r8, 1
+			
+			// Se der timeout, é porquê demorou para receber o dado
+			if(timeout){
+				timeout_stop();
+				PORTB |= (1 << PB5);
+				state = SEND_HUM;
+ 31c:	0f 2e       	mov	r0, r31
+ 31e:	f3 e0       	ldi	r31, 0x03	; 3
+ 320:	6f 2e       	mov	r6, r31
+ 322:	f0 2d       	mov	r31, r0
+	timer1_init();
+	sei();
+
 	while (1) 
     {
-		if(start_dht22() == 1){
- 322:	0e 94 bd 00 	call	0x17a	; 0x17a <start_dht22>
- 326:	81 30       	cpi	r24, 0x01	; 1
- 328:	39 f4       	brne	.+14     	; 0x338 <main+0x7c>
-			read_dht22(&humidity, &temperature);	
- 32a:	be 01       	movw	r22, r28
- 32c:	65 5f       	subi	r22, 0xF5	; 245
- 32e:	7f 4f       	sbci	r23, 0xFF	; 255
- 330:	ce 01       	movw	r24, r28
- 332:	09 96       	adiw	r24, 0x09	; 9
- 334:	0e 94 cf 00 	call	0x19e	; 0x19e <read_dht22>
-		}	
-		
 		switch(state){
- 338:	12 30       	cpi	r17, 0x02	; 2
- 33a:	61 f1       	breq	.+88     	; 0x394 <main+0xd8>
- 33c:	18 f4       	brcc	.+6      	; 0x344 <main+0x88>
- 33e:	11 30       	cpi	r17, 0x01	; 1
- 340:	41 f0       	breq	.+16     	; 0x352 <main+0x96>
- 342:	ef cf       	rjmp	.-34     	; 0x322 <main+0x66>
- 344:	13 30       	cpi	r17, 0x03	; 3
- 346:	09 f4       	brne	.+2      	; 0x34a <main+0x8e>
- 348:	42 c0       	rjmp	.+132    	; 0x3ce <main+0x112>
- 34a:	14 30       	cpi	r17, 0x04	; 4
- 34c:	09 f4       	brne	.+2      	; 0x350 <main+0x94>
- 34e:	60 c0       	rjmp	.+192    	; 0x410 <__LOCK_REGION_LENGTH__+0x10>
- 350:	e8 cf       	rjmp	.-48     	; 0x322 <main+0x66>
+ 324:	12 30       	cpi	r17, 0x02	; 2
+ 326:	09 f4       	brne	.+2      	; 0x32a <main+0x6e>
+ 328:	43 c0       	rjmp	.+134    	; 0x3b0 <main+0xf4>
+ 32a:	18 f4       	brcc	.+6      	; 0x332 <main+0x76>
+ 32c:	11 30       	cpi	r17, 0x01	; 1
+ 32e:	41 f0       	breq	.+16     	; 0x340 <main+0x84>
+ 330:	f9 cf       	rjmp	.-14     	; 0x324 <main+0x68>
+ 332:	13 30       	cpi	r17, 0x03	; 3
+ 334:	09 f4       	brne	.+2      	; 0x338 <main+0x7c>
+ 336:	5a c0       	rjmp	.+180    	; 0x3ec <main+0x130>
+ 338:	14 30       	cpi	r17, 0x04	; 4
+ 33a:	09 f4       	brne	.+2      	; 0x33e <main+0x82>
+ 33c:	84 c0       	rjmp	.+264    	; 0x446 <__LOCK_REGION_LENGTH__+0x46>
+ 33e:	f2 cf       	rjmp	.-28     	; 0x324 <main+0x68>
 			
 		case SEND_TEMP:
+			if(start_dht22() == 1){
+ 340:	0e 94 bd 00 	call	0x17a	; 0x17a <start_dht22>
+ 344:	81 30       	cpi	r24, 0x01	; 1
+ 346:	39 f4       	brne	.+14     	; 0x356 <main+0x9a>
+				read_dht22(&humidity, &temperature);
+ 348:	be 01       	movw	r22, r28
+ 34a:	65 5f       	subi	r22, 0xF5	; 245
+ 34c:	7f 4f       	sbci	r23, 0xFF	; 255
+ 34e:	ce 01       	movw	r24, r28
+ 350:	09 96       	adiw	r24, 0x09	; 9
+ 352:	0e 94 cf 00 	call	0x19e	; 0x19e <read_dht22>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 356:	2f ef       	ldi	r18, 0xFF	; 255
+ 358:	83 ed       	ldi	r24, 0xD3	; 211
+ 35a:	90 e3       	ldi	r25, 0x30	; 48
+ 35c:	21 50       	subi	r18, 0x01	; 1
+ 35e:	80 40       	sbci	r24, 0x00	; 0
+ 360:	90 40       	sbci	r25, 0x00	; 0
+ 362:	e1 f7       	brne	.-8      	; 0x35c <main+0xa0>
+ 364:	00 c0       	rjmp	.+0      	; 0x366 <main+0xaa>
+ 366:	00 00       	nop
+			}
+			_delay_ms(1000);
 			// Preparando o pacote
 			tx_pkg.addr = 0x15;
- 352:	99 82       	std	Y+1, r9	; 0x01
+ 368:	99 82       	std	Y+1, r9	; 0x01
 			tx_pkg.cmd  = 0x01;
- 354:	0a 83       	std	Y+2, r16	; 0x02
+ 36a:	0a 83       	std	Y+2, r16	; 0x02
 			tx_pkg.reg  = 0x0500;	// Big Endian
- 356:	dc 82       	std	Y+4, r13	; 0x04
- 358:	cb 82       	std	Y+3, r12	; 0x03
+ 36c:	dc 82       	std	Y+4, r13	; 0x04
+ 36e:	cb 82       	std	Y+3, r12	; 0x03
 			tx_pkg.data = little_to_big(temperature);
- 35a:	8b 85       	ldd	r24, Y+11	; 0x0b
- 35c:	9c 85       	ldd	r25, Y+12	; 0x0c
- 35e:	98 27       	eor	r25, r24
- 360:	89 27       	eor	r24, r25
- 362:	98 27       	eor	r25, r24
- 364:	9e 83       	std	Y+6, r25	; 0x06
- 366:	8d 83       	std	Y+5, r24	; 0x05
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
- 368:	66 e0       	ldi	r22, 0x06	; 6
- 36a:	70 e0       	ldi	r23, 0x00	; 0
- 36c:	ce 01       	movw	r24, r28
- 36e:	01 96       	adiw	r24, 0x01	; 1
- 370:	0e 94 35 01 	call	0x26a	; 0x26a <CRC16_2>
- 374:	98 87       	std	Y+8, r25	; 0x08
- 376:	8f 83       	std	Y+7, r24	; 0x07
-			
-			// Enviando o pacote
-			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
- 378:	97 01       	movw	r18, r14
- 37a:	41 e0       	ldi	r20, 0x01	; 1
- 37c:	50 e0       	ldi	r21, 0x00	; 0
- 37e:	68 e0       	ldi	r22, 0x08	; 8
+ 370:	8b 85       	ldd	r24, Y+11	; 0x0b
+ 372:	9c 85       	ldd	r25, Y+12	; 0x0c
+ 374:	98 27       	eor	r25, r24
+ 376:	89 27       	eor	r24, r25
+ 378:	98 27       	eor	r25, r24
+ 37a:	9e 83       	std	Y+6, r25	; 0x06
+ 37c:	8d 83       	std	Y+5, r24	; 0x05
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
+ 37e:	66 e0       	ldi	r22, 0x06	; 6
  380:	70 e0       	ldi	r23, 0x00	; 0
  382:	ce 01       	movw	r24, r28
  384:	01 96       	adiw	r24, 0x01	; 1
- 386:	0e 94 36 02 	call	0x46c	; 0x46c <fwrite>
+ 386:	0e 94 35 01 	call	0x26a	; 0x26a <CRC16_2>
+ 38a:	98 27       	eor	r25, r24
+ 38c:	89 27       	eor	r24, r25
+ 38e:	98 27       	eor	r25, r24
+ 390:	98 87       	std	Y+8, r25	; 0x08
+ 392:	8f 83       	std	Y+7, r24	; 0x07
+			
+			// Enviando o pacote
+			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
+ 394:	97 01       	movw	r18, r14
+ 396:	41 e0       	ldi	r20, 0x01	; 1
+ 398:	50 e0       	ldi	r21, 0x00	; 0
+ 39a:	68 e0       	ldi	r22, 0x08	; 8
+ 39c:	70 e0       	ldi	r23, 0x00	; 0
+ 39e:	ce 01       	movw	r24, r28
+ 3a0:	01 96       	adiw	r24, 0x01	; 1
+ 3a2:	0e 94 52 02 	call	0x4a4	; 0x4a4 <fwrite>
 			index = 0;
 			state = RECV_TEMP;
 			timeout_start();
- 38a:	0e 94 25 01 	call	0x24a	; 0x24a <timeout_start>
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+ 3a6:	0e 94 25 01 	call	0x24a	; 0x24a <timeout_start>
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 			
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
 			state = RECV_TEMP;
- 38e:	18 2d       	mov	r17, r8
+ 3aa:	18 2d       	mov	r17, r8
 			tx_pkg.data = little_to_big(temperature);
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 			
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
- 390:	51 2c       	mov	r5, r1
+ 3ac:	51 2c       	mov	r5, r1
 			state = RECV_TEMP;
 			timeout_start();
 			break;
- 392:	c7 cf       	rjmp	.-114    	; 0x322 <main+0x66>
+ 3ae:	ba cf       	rjmp	.-140    	; 0x324 <main+0x68>
 			
 		case RECV_TEMP:
 			
 			if(usart_buffer_has_data()){
- 394:	0e 94 a4 00 	call	0x148	; 0x148 <usart_buffer_has_data>
- 398:	88 23       	and	r24, r24
- 39a:	81 f0       	breq	.+32     	; 0x3bc <main+0x100>
+ 3b0:	0e 94 a4 00 	call	0x148	; 0x148 <usart_buffer_has_data>
+ 3b4:	88 23       	and	r24, r24
+ 3b6:	81 f0       	breq	.+32     	; 0x3d8 <main+0x11c>
 				if(pkg_byte[index] == usart_buffer_get_data()){
- 39c:	e1 e0       	ldi	r30, 0x01	; 1
- 39e:	f0 e0       	ldi	r31, 0x00	; 0
- 3a0:	ec 0f       	add	r30, r28
- 3a2:	fd 1f       	adc	r31, r29
- 3a4:	e5 0d       	add	r30, r5
- 3a6:	f1 1d       	adc	r31, r1
- 3a8:	40 80       	ld	r4, Z
- 3aa:	0e 94 ad 00 	call	0x15a	; 0x15a <usart_buffer_get_data>
- 3ae:	48 12       	cpse	r4, r24
- 3b0:	05 c0       	rjmp	.+10     	; 0x3bc <main+0x100>
+ 3b8:	e1 e0       	ldi	r30, 0x01	; 1
+ 3ba:	f0 e0       	ldi	r31, 0x00	; 0
+ 3bc:	ec 0f       	add	r30, r28
+ 3be:	fd 1f       	adc	r31, r29
+ 3c0:	e5 0d       	add	r30, r5
+ 3c2:	f1 1d       	adc	r31, r1
+ 3c4:	40 80       	ld	r4, Z
+ 3c6:	0e 94 ad 00 	call	0x15a	; 0x15a <usart_buffer_get_data>
+ 3ca:	48 12       	cpse	r4, r24
+ 3cc:	05 c0       	rjmp	.+10     	; 0x3d8 <main+0x11c>
 					index++;
- 3b2:	53 94       	inc	r5
+ 3ce:	53 94       	inc	r5
 					if(index == 8){
- 3b4:	88 e0       	ldi	r24, 0x08	; 8
- 3b6:	58 12       	cpse	r5, r24
- 3b8:	01 c0       	rjmp	.+2      	; 0x3bc <main+0x100>
+ 3d0:	28 e0       	ldi	r18, 0x08	; 8
+ 3d2:	52 12       	cpse	r5, r18
+ 3d4:	01 c0       	rjmp	.+2      	; 0x3d8 <main+0x11c>
 						state = SEND_HUM;
- 3ba:	16 2d       	mov	r17, r6
-					// Vai acontecer alguma coisa se der erro
+ 3d6:	16 2d       	mov	r17, r6
+					
 				}
 			}
 			
 			// Se der timeout, é porquê demorou para receber o dado
 			if(timeout){
- 3bc:	80 91 20 01 	lds	r24, 0x0120	; 0x800120 <timeout>
- 3c0:	88 23       	and	r24, r24
- 3c2:	09 f4       	brne	.+2      	; 0x3c6 <main+0x10a>
- 3c4:	ae cf       	rjmp	.-164    	; 0x322 <main+0x66>
+ 3d8:	80 91 20 01 	lds	r24, 0x0120	; 0x800120 <timeout>
+ 3dc:	88 23       	and	r24, r24
+ 3de:	09 f4       	brne	.+2      	; 0x3e2 <main+0x126>
+ 3e0:	a1 cf       	rjmp	.-190    	; 0x324 <main+0x68>
 				timeout_stop();
- 3c6:	0e 94 2f 01 	call	0x25e	; 0x25e <timeout_stop>
+ 3e2:	0e 94 2f 01 	call	0x25e	; 0x25e <timeout_stop>
+				PORTB |= (1 << PB5);
+ 3e6:	2d 9a       	sbi	0x05, 5	; 5
 				state = SEND_HUM;
- 3ca:	16 2d       	mov	r17, r6
- 3cc:	aa cf       	rjmp	.-172    	; 0x322 <main+0x66>
-			
+ 3e8:	16 2d       	mov	r17, r6
+ 3ea:	9c cf       	rjmp	.-200    	; 0x324 <main+0x68>
+ 3ec:	8f ef       	ldi	r24, 0xFF	; 255
+ 3ee:	93 ed       	ldi	r25, 0xD3	; 211
+ 3f0:	20 e3       	ldi	r18, 0x30	; 48
+ 3f2:	81 50       	subi	r24, 0x01	; 1
+ 3f4:	90 40       	sbci	r25, 0x00	; 0
+ 3f6:	20 40       	sbci	r18, 0x00	; 0
+ 3f8:	e1 f7       	brne	.-8      	; 0x3f2 <main+0x136>
+ 3fa:	00 c0       	rjmp	.+0      	; 0x3fc <main+0x140>
+ 3fc:	00 00       	nop
 			break;
 
 		case SEND_HUM:
+			_delay_ms(1000);
 			// Preparando o pacote
 			tx_pkg.addr = 0x15;
- 3ce:	99 82       	std	Y+1, r9	; 0x01
+ 3fe:	99 82       	std	Y+1, r9	; 0x01
 			tx_pkg.cmd  = 0x01;
- 3d0:	0a 83       	std	Y+2, r16	; 0x02
+ 400:	0a 83       	std	Y+2, r16	; 0x02
 			tx_pkg.reg  = 0x0600;	// Big Endian
- 3d2:	bc 82       	std	Y+4, r11	; 0x04
- 3d4:	ab 82       	std	Y+3, r10	; 0x03
+ 402:	bc 82       	std	Y+4, r11	; 0x04
+ 404:	ab 82       	std	Y+3, r10	; 0x03
 			tx_pkg.data = little_to_big(humidity);
- 3d6:	89 85       	ldd	r24, Y+9	; 0x09
- 3d8:	9a 85       	ldd	r25, Y+10	; 0x0a
- 3da:	98 27       	eor	r25, r24
- 3dc:	89 27       	eor	r24, r25
- 3de:	98 27       	eor	r25, r24
- 3e0:	9e 83       	std	Y+6, r25	; 0x06
- 3e2:	8d 83       	std	Y+5, r24	; 0x05
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
- 3e4:	66 e0       	ldi	r22, 0x06	; 6
- 3e6:	70 e0       	ldi	r23, 0x00	; 0
- 3e8:	ce 01       	movw	r24, r28
- 3ea:	01 96       	adiw	r24, 0x01	; 1
- 3ec:	0e 94 35 01 	call	0x26a	; 0x26a <CRC16_2>
- 3f0:	98 87       	std	Y+8, r25	; 0x08
- 3f2:	8f 83       	std	Y+7, r24	; 0x07
+ 406:	89 85       	ldd	r24, Y+9	; 0x09
+ 408:	9a 85       	ldd	r25, Y+10	; 0x0a
+ 40a:	98 27       	eor	r25, r24
+ 40c:	89 27       	eor	r24, r25
+ 40e:	98 27       	eor	r25, r24
+ 410:	9e 83       	std	Y+6, r25	; 0x06
+ 412:	8d 83       	std	Y+5, r24	; 0x05
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
+ 414:	66 e0       	ldi	r22, 0x06	; 6
+ 416:	70 e0       	ldi	r23, 0x00	; 0
+ 418:	ce 01       	movw	r24, r28
+ 41a:	01 96       	adiw	r24, 0x01	; 1
+ 41c:	0e 94 35 01 	call	0x26a	; 0x26a <CRC16_2>
+ 420:	98 27       	eor	r25, r24
+ 422:	89 27       	eor	r24, r25
+ 424:	98 27       	eor	r25, r24
+ 426:	98 87       	std	Y+8, r25	; 0x08
+ 428:	8f 83       	std	Y+7, r24	; 0x07
 		
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
- 3f4:	97 01       	movw	r18, r14
- 3f6:	41 e0       	ldi	r20, 0x01	; 1
- 3f8:	50 e0       	ldi	r21, 0x00	; 0
- 3fa:	68 e0       	ldi	r22, 0x08	; 8
- 3fc:	70 e0       	ldi	r23, 0x00	; 0
- 3fe:	ce 01       	movw	r24, r28
- 400:	01 96       	adiw	r24, 0x01	; 1
- 402:	0e 94 36 02 	call	0x46c	; 0x46c <fwrite>
+ 42a:	97 01       	movw	r18, r14
+ 42c:	41 e0       	ldi	r20, 0x01	; 1
+ 42e:	50 e0       	ldi	r21, 0x00	; 0
+ 430:	68 e0       	ldi	r22, 0x08	; 8
+ 432:	70 e0       	ldi	r23, 0x00	; 0
+ 434:	ce 01       	movw	r24, r28
+ 436:	01 96       	adiw	r24, 0x01	; 1
+ 438:	0e 94 52 02 	call	0x4a4	; 0x4a4 <fwrite>
 			index = 0;
 			state = RECV_HUM;
 			timeout_start();
- 406:	0e 94 25 01 	call	0x24a	; 0x24a <timeout_start>
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+ 43c:	0e 94 25 01 	call	0x24a	; 0x24a <timeout_start>
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 		
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
 			state = RECV_HUM;
- 40a:	17 2d       	mov	r17, r7
+ 440:	17 2d       	mov	r17, r7
 			tx_pkg.data = little_to_big(humidity);
-			tx_pkg.crc  = CRC16_2(&tx_pkg, 6);	// Endereço do pacote e quantos bytes são para o cálculo
+			tx_pkg.crc  = little_to_big(CRC16_2(&tx_pkg, 6));	// Endereço do pacote e quantos bytes são para o cálculo
 		
 			// Enviando o pacote
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
- 40c:	51 2c       	mov	r5, r1
+ 442:	51 2c       	mov	r5, r1
 			state = RECV_HUM;
 			timeout_start();
 			break;
- 40e:	89 cf       	rjmp	.-238    	; 0x322 <main+0x66>
+ 444:	6f cf       	rjmp	.-290    	; 0x324 <main+0x68>
 		
 		case RECV_HUM:
 			
 			if(usart_buffer_has_data()){
- 410:	0e 94 a4 00 	call	0x148	; 0x148 <usart_buffer_has_data>
- 414:	88 23       	and	r24, r24
- 416:	91 f0       	breq	.+36     	; 0x43c <__LOCK_REGION_LENGTH__+0x3c>
+ 446:	0e 94 a4 00 	call	0x148	; 0x148 <usart_buffer_has_data>
+ 44a:	88 23       	and	r24, r24
+ 44c:	91 f0       	breq	.+36     	; 0x472 <__LOCK_REGION_LENGTH__+0x72>
 				if(pkg_byte[index] == usart_buffer_get_data()){
- 418:	e1 e0       	ldi	r30, 0x01	; 1
- 41a:	f0 e0       	ldi	r31, 0x00	; 0
- 41c:	ec 0f       	add	r30, r28
- 41e:	fd 1f       	adc	r31, r29
- 420:	e5 0d       	add	r30, r5
- 422:	f1 1d       	adc	r31, r1
- 424:	40 80       	ld	r4, Z
- 426:	0e 94 ad 00 	call	0x15a	; 0x15a <usart_buffer_get_data>
- 42a:	48 12       	cpse	r4, r24
- 42c:	07 c0       	rjmp	.+14     	; 0x43c <__LOCK_REGION_LENGTH__+0x3c>
+ 44e:	e1 e0       	ldi	r30, 0x01	; 1
+ 450:	f0 e0       	ldi	r31, 0x00	; 0
+ 452:	ec 0f       	add	r30, r28
+ 454:	fd 1f       	adc	r31, r29
+ 456:	e5 0d       	add	r30, r5
+ 458:	f1 1d       	adc	r31, r1
+ 45a:	40 80       	ld	r4, Z
+ 45c:	0e 94 ad 00 	call	0x15a	; 0x15a <usart_buffer_get_data>
+ 460:	48 12       	cpse	r4, r24
+ 462:	07 c0       	rjmp	.+14     	; 0x472 <__LOCK_REGION_LENGTH__+0x72>
 					index++;
- 42e:	53 94       	inc	r5
+ 464:	53 94       	inc	r5
 					if(index == 8){
- 430:	88 e0       	ldi	r24, 0x08	; 8
- 432:	58 12       	cpse	r5, r24
- 434:	03 c0       	rjmp	.+6      	; 0x43c <__LOCK_REGION_LENGTH__+0x3c>
+ 466:	88 e0       	ldi	r24, 0x08	; 8
+ 468:	58 12       	cpse	r5, r24
+ 46a:	03 c0       	rjmp	.+6      	; 0x472 <__LOCK_REGION_LENGTH__+0x72>
 						state = SEND_TEMP;
 						timeout_stop();
- 436:	0e 94 2f 01 	call	0x25e	; 0x25e <timeout_stop>
+ 46c:	0e 94 2f 01 	call	0x25e	; 0x25e <timeout_stop>
 			
 			if(usart_buffer_has_data()){
 				if(pkg_byte[index] == usart_buffer_get_data()){
 					index++;
 					if(index == 8){
 						state = SEND_TEMP;
- 43a:	10 2f       	mov	r17, r16
+ 470:	10 2f       	mov	r17, r16
 				else{
 					// Vai acontecer alguma coisa se der erro
 				}
 			}	
 			// Se der timeout, é porquê demorou para receber o dado
 			if(timeout){
- 43c:	80 91 20 01 	lds	r24, 0x0120	; 0x800120 <timeout>
- 440:	88 23       	and	r24, r24
- 442:	09 f4       	brne	.+2      	; 0x446 <__LOCK_REGION_LENGTH__+0x46>
- 444:	6e cf       	rjmp	.-292    	; 0x322 <main+0x66>
+ 472:	80 91 20 01 	lds	r24, 0x0120	; 0x800120 <timeout>
+ 476:	88 23       	and	r24, r24
+ 478:	09 f4       	brne	.+2      	; 0x47c <__LOCK_REGION_LENGTH__+0x7c>
+ 47a:	54 cf       	rjmp	.-344    	; 0x324 <main+0x68>
 				timeout_stop();
- 446:	0e 94 2f 01 	call	0x25e	; 0x25e <timeout_stop>
+ 47c:	0e 94 2f 01 	call	0x25e	; 0x25e <timeout_stop>
+				PORTB |= (1 << PB5);
+ 480:	2d 9a       	sbi	0x05, 5	; 5
 				state = SEND_TEMP;
- 44a:	10 2f       	mov	r17, r16
- 44c:	6a cf       	rjmp	.-300    	; 0x322 <main+0x66>
+ 482:	10 2f       	mov	r17, r16
+ 484:	4f cf       	rjmp	.-354    	; 0x324 <main+0x68>
 
-0000044e <__vector_11>:
+00000486 <__vector_11>:
 	//fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);		//envio do pacote
 	
 }
 
 ISR(TIMER1_COMPA_vect)
 {
- 44e:	1f 92       	push	r1
- 450:	0f 92       	push	r0
- 452:	0f b6       	in	r0, 0x3f	; 63
- 454:	0f 92       	push	r0
- 456:	11 24       	eor	r1, r1
- 458:	8f 93       	push	r24
+ 486:	1f 92       	push	r1
+ 488:	0f 92       	push	r0
+ 48a:	0f b6       	in	r0, 0x3f	; 63
+ 48c:	0f 92       	push	r0
+ 48e:	11 24       	eor	r1, r1
+ 490:	8f 93       	push	r24
 	timeout = 1;
- 45a:	81 e0       	ldi	r24, 0x01	; 1
- 45c:	80 93 20 01 	sts	0x0120, r24	; 0x800120 <timeout>
+ 492:	81 e0       	ldi	r24, 0x01	; 1
+ 494:	80 93 20 01 	sts	0x0120, r24	; 0x800120 <timeout>
 }
- 460:	8f 91       	pop	r24
- 462:	0f 90       	pop	r0
- 464:	0f be       	out	0x3f, r0	; 63
- 466:	0f 90       	pop	r0
- 468:	1f 90       	pop	r1
- 46a:	18 95       	reti
+ 498:	8f 91       	pop	r24
+ 49a:	0f 90       	pop	r0
+ 49c:	0f be       	out	0x3f, r0	; 63
+ 49e:	0f 90       	pop	r0
+ 4a0:	1f 90       	pop	r1
+ 4a2:	18 95       	reti
 
-0000046c <fwrite>:
- 46c:	a0 e0       	ldi	r26, 0x00	; 0
- 46e:	b0 e0       	ldi	r27, 0x00	; 0
- 470:	ec e3       	ldi	r30, 0x3C	; 60
- 472:	f2 e0       	ldi	r31, 0x02	; 2
- 474:	0c 94 70 02 	jmp	0x4e0	; 0x4e0 <__prologue_saves__+0xc>
- 478:	5b 01       	movw	r10, r22
- 47a:	4a 01       	movw	r8, r20
- 47c:	79 01       	movw	r14, r18
- 47e:	d9 01       	movw	r26, r18
- 480:	13 96       	adiw	r26, 0x03	; 3
- 482:	2c 91       	ld	r18, X
- 484:	21 ff       	sbrs	r18, 1
- 486:	1d c0       	rjmp	.+58     	; 0x4c2 <fwrite+0x56>
- 488:	c0 e0       	ldi	r28, 0x00	; 0
- 48a:	d0 e0       	ldi	r29, 0x00	; 0
- 48c:	c8 15       	cp	r28, r8
- 48e:	d9 05       	cpc	r29, r9
- 490:	d9 f0       	breq	.+54     	; 0x4c8 <fwrite+0x5c>
- 492:	8c 01       	movw	r16, r24
- 494:	6c 01       	movw	r12, r24
- 496:	ca 0c       	add	r12, r10
- 498:	db 1c       	adc	r13, r11
- 49a:	c8 01       	movw	r24, r16
- 49c:	0c 15       	cp	r16, r12
- 49e:	1d 05       	cpc	r17, r13
- 4a0:	71 f0       	breq	.+28     	; 0x4be <fwrite+0x52>
- 4a2:	0f 5f       	subi	r16, 0xFF	; 255
- 4a4:	1f 4f       	sbci	r17, 0xFF	; 255
- 4a6:	d7 01       	movw	r26, r14
- 4a8:	18 96       	adiw	r26, 0x08	; 8
- 4aa:	ed 91       	ld	r30, X+
- 4ac:	fc 91       	ld	r31, X
- 4ae:	19 97       	sbiw	r26, 0x09	; 9
- 4b0:	b7 01       	movw	r22, r14
- 4b2:	dc 01       	movw	r26, r24
- 4b4:	8c 91       	ld	r24, X
- 4b6:	09 95       	icall
- 4b8:	89 2b       	or	r24, r25
- 4ba:	79 f3       	breq	.-34     	; 0x49a <fwrite+0x2e>
- 4bc:	05 c0       	rjmp	.+10     	; 0x4c8 <fwrite+0x5c>
- 4be:	21 96       	adiw	r28, 0x01	; 1
- 4c0:	e5 cf       	rjmp	.-54     	; 0x48c <fwrite+0x20>
- 4c2:	80 e0       	ldi	r24, 0x00	; 0
- 4c4:	90 e0       	ldi	r25, 0x00	; 0
- 4c6:	01 c0       	rjmp	.+2      	; 0x4ca <fwrite+0x5e>
- 4c8:	ce 01       	movw	r24, r28
- 4ca:	cd b7       	in	r28, 0x3d	; 61
- 4cc:	de b7       	in	r29, 0x3e	; 62
- 4ce:	ec e0       	ldi	r30, 0x0C	; 12
- 4d0:	0c 94 8c 02 	jmp	0x518	; 0x518 <__epilogue_restores__+0xc>
+000004a4 <fwrite>:
+ 4a4:	a0 e0       	ldi	r26, 0x00	; 0
+ 4a6:	b0 e0       	ldi	r27, 0x00	; 0
+ 4a8:	e8 e5       	ldi	r30, 0x58	; 88
+ 4aa:	f2 e0       	ldi	r31, 0x02	; 2
+ 4ac:	0c 94 8c 02 	jmp	0x518	; 0x518 <__prologue_saves__+0xc>
+ 4b0:	5b 01       	movw	r10, r22
+ 4b2:	4a 01       	movw	r8, r20
+ 4b4:	79 01       	movw	r14, r18
+ 4b6:	d9 01       	movw	r26, r18
+ 4b8:	13 96       	adiw	r26, 0x03	; 3
+ 4ba:	2c 91       	ld	r18, X
+ 4bc:	21 ff       	sbrs	r18, 1
+ 4be:	1d c0       	rjmp	.+58     	; 0x4fa <fwrite+0x56>
+ 4c0:	c0 e0       	ldi	r28, 0x00	; 0
+ 4c2:	d0 e0       	ldi	r29, 0x00	; 0
+ 4c4:	c8 15       	cp	r28, r8
+ 4c6:	d9 05       	cpc	r29, r9
+ 4c8:	d9 f0       	breq	.+54     	; 0x500 <fwrite+0x5c>
+ 4ca:	8c 01       	movw	r16, r24
+ 4cc:	6c 01       	movw	r12, r24
+ 4ce:	ca 0c       	add	r12, r10
+ 4d0:	db 1c       	adc	r13, r11
+ 4d2:	c8 01       	movw	r24, r16
+ 4d4:	0c 15       	cp	r16, r12
+ 4d6:	1d 05       	cpc	r17, r13
+ 4d8:	71 f0       	breq	.+28     	; 0x4f6 <fwrite+0x52>
+ 4da:	0f 5f       	subi	r16, 0xFF	; 255
+ 4dc:	1f 4f       	sbci	r17, 0xFF	; 255
+ 4de:	d7 01       	movw	r26, r14
+ 4e0:	18 96       	adiw	r26, 0x08	; 8
+ 4e2:	ed 91       	ld	r30, X+
+ 4e4:	fc 91       	ld	r31, X
+ 4e6:	19 97       	sbiw	r26, 0x09	; 9
+ 4e8:	b7 01       	movw	r22, r14
+ 4ea:	dc 01       	movw	r26, r24
+ 4ec:	8c 91       	ld	r24, X
+ 4ee:	09 95       	icall
+ 4f0:	89 2b       	or	r24, r25
+ 4f2:	79 f3       	breq	.-34     	; 0x4d2 <fwrite+0x2e>
+ 4f4:	05 c0       	rjmp	.+10     	; 0x500 <fwrite+0x5c>
+ 4f6:	21 96       	adiw	r28, 0x01	; 1
+ 4f8:	e5 cf       	rjmp	.-54     	; 0x4c4 <fwrite+0x20>
+ 4fa:	80 e0       	ldi	r24, 0x00	; 0
+ 4fc:	90 e0       	ldi	r25, 0x00	; 0
+ 4fe:	01 c0       	rjmp	.+2      	; 0x502 <fwrite+0x5e>
+ 500:	ce 01       	movw	r24, r28
+ 502:	cd b7       	in	r28, 0x3d	; 61
+ 504:	de b7       	in	r29, 0x3e	; 62
+ 506:	ec e0       	ldi	r30, 0x0C	; 12
+ 508:	0c 94 a8 02 	jmp	0x550	; 0x550 <__epilogue_restores__+0xc>
 
-000004d4 <__prologue_saves__>:
- 4d4:	2f 92       	push	r2
- 4d6:	3f 92       	push	r3
- 4d8:	4f 92       	push	r4
- 4da:	5f 92       	push	r5
- 4dc:	6f 92       	push	r6
- 4de:	7f 92       	push	r7
- 4e0:	8f 92       	push	r8
- 4e2:	9f 92       	push	r9
- 4e4:	af 92       	push	r10
- 4e6:	bf 92       	push	r11
- 4e8:	cf 92       	push	r12
- 4ea:	df 92       	push	r13
- 4ec:	ef 92       	push	r14
- 4ee:	ff 92       	push	r15
- 4f0:	0f 93       	push	r16
- 4f2:	1f 93       	push	r17
- 4f4:	cf 93       	push	r28
- 4f6:	df 93       	push	r29
- 4f8:	cd b7       	in	r28, 0x3d	; 61
- 4fa:	de b7       	in	r29, 0x3e	; 62
- 4fc:	ca 1b       	sub	r28, r26
- 4fe:	db 0b       	sbc	r29, r27
- 500:	0f b6       	in	r0, 0x3f	; 63
- 502:	f8 94       	cli
- 504:	de bf       	out	0x3e, r29	; 62
- 506:	0f be       	out	0x3f, r0	; 63
- 508:	cd bf       	out	0x3d, r28	; 61
- 50a:	09 94       	ijmp
+0000050c <__prologue_saves__>:
+ 50c:	2f 92       	push	r2
+ 50e:	3f 92       	push	r3
+ 510:	4f 92       	push	r4
+ 512:	5f 92       	push	r5
+ 514:	6f 92       	push	r6
+ 516:	7f 92       	push	r7
+ 518:	8f 92       	push	r8
+ 51a:	9f 92       	push	r9
+ 51c:	af 92       	push	r10
+ 51e:	bf 92       	push	r11
+ 520:	cf 92       	push	r12
+ 522:	df 92       	push	r13
+ 524:	ef 92       	push	r14
+ 526:	ff 92       	push	r15
+ 528:	0f 93       	push	r16
+ 52a:	1f 93       	push	r17
+ 52c:	cf 93       	push	r28
+ 52e:	df 93       	push	r29
+ 530:	cd b7       	in	r28, 0x3d	; 61
+ 532:	de b7       	in	r29, 0x3e	; 62
+ 534:	ca 1b       	sub	r28, r26
+ 536:	db 0b       	sbc	r29, r27
+ 538:	0f b6       	in	r0, 0x3f	; 63
+ 53a:	f8 94       	cli
+ 53c:	de bf       	out	0x3e, r29	; 62
+ 53e:	0f be       	out	0x3f, r0	; 63
+ 540:	cd bf       	out	0x3d, r28	; 61
+ 542:	09 94       	ijmp
 
-0000050c <__epilogue_restores__>:
- 50c:	2a 88       	ldd	r2, Y+18	; 0x12
- 50e:	39 88       	ldd	r3, Y+17	; 0x11
- 510:	48 88       	ldd	r4, Y+16	; 0x10
- 512:	5f 84       	ldd	r5, Y+15	; 0x0f
- 514:	6e 84       	ldd	r6, Y+14	; 0x0e
- 516:	7d 84       	ldd	r7, Y+13	; 0x0d
- 518:	8c 84       	ldd	r8, Y+12	; 0x0c
- 51a:	9b 84       	ldd	r9, Y+11	; 0x0b
- 51c:	aa 84       	ldd	r10, Y+10	; 0x0a
- 51e:	b9 84       	ldd	r11, Y+9	; 0x09
- 520:	c8 84       	ldd	r12, Y+8	; 0x08
- 522:	df 80       	ldd	r13, Y+7	; 0x07
- 524:	ee 80       	ldd	r14, Y+6	; 0x06
- 526:	fd 80       	ldd	r15, Y+5	; 0x05
- 528:	0c 81       	ldd	r16, Y+4	; 0x04
- 52a:	1b 81       	ldd	r17, Y+3	; 0x03
- 52c:	aa 81       	ldd	r26, Y+2	; 0x02
- 52e:	b9 81       	ldd	r27, Y+1	; 0x01
- 530:	ce 0f       	add	r28, r30
- 532:	d1 1d       	adc	r29, r1
- 534:	0f b6       	in	r0, 0x3f	; 63
- 536:	f8 94       	cli
- 538:	de bf       	out	0x3e, r29	; 62
- 53a:	0f be       	out	0x3f, r0	; 63
- 53c:	cd bf       	out	0x3d, r28	; 61
- 53e:	ed 01       	movw	r28, r26
- 540:	08 95       	ret
+00000544 <__epilogue_restores__>:
+ 544:	2a 88       	ldd	r2, Y+18	; 0x12
+ 546:	39 88       	ldd	r3, Y+17	; 0x11
+ 548:	48 88       	ldd	r4, Y+16	; 0x10
+ 54a:	5f 84       	ldd	r5, Y+15	; 0x0f
+ 54c:	6e 84       	ldd	r6, Y+14	; 0x0e
+ 54e:	7d 84       	ldd	r7, Y+13	; 0x0d
+ 550:	8c 84       	ldd	r8, Y+12	; 0x0c
+ 552:	9b 84       	ldd	r9, Y+11	; 0x0b
+ 554:	aa 84       	ldd	r10, Y+10	; 0x0a
+ 556:	b9 84       	ldd	r11, Y+9	; 0x09
+ 558:	c8 84       	ldd	r12, Y+8	; 0x08
+ 55a:	df 80       	ldd	r13, Y+7	; 0x07
+ 55c:	ee 80       	ldd	r14, Y+6	; 0x06
+ 55e:	fd 80       	ldd	r15, Y+5	; 0x05
+ 560:	0c 81       	ldd	r16, Y+4	; 0x04
+ 562:	1b 81       	ldd	r17, Y+3	; 0x03
+ 564:	aa 81       	ldd	r26, Y+2	; 0x02
+ 566:	b9 81       	ldd	r27, Y+1	; 0x01
+ 568:	ce 0f       	add	r28, r30
+ 56a:	d1 1d       	adc	r29, r1
+ 56c:	0f b6       	in	r0, 0x3f	; 63
+ 56e:	f8 94       	cli
+ 570:	de bf       	out	0x3e, r29	; 62
+ 572:	0f be       	out	0x3f, r0	; 63
+ 574:	cd bf       	out	0x3d, r28	; 61
+ 576:	ed 01       	movw	r28, r26
+ 578:	08 95       	ret
 
-00000542 <_exit>:
- 542:	f8 94       	cli
+0000057a <_exit>:
+ 57a:	f8 94       	cli
 
-00000544 <__stop_program>:
- 544:	ff cf       	rjmp	.-2      	; 0x544 <__stop_program>
+0000057c <__stop_program>:
+ 57c:	ff cf       	rjmp	.-2      	; 0x57c <__stop_program>
