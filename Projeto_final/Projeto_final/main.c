@@ -13,11 +13,35 @@
 #include "dht22.h"
 #include "avr_usart.h"
 #include <avr/interrupt.h>
+#include "avr_timer.h"
 
 #define SEND_TEMP	1
 #define RECV_TEMP	2
 #define SEND_HUM	3
 #define RECV_HUM	4
+
+volatile uint8_t timeout;
+
+void timer1_init()
+{
+	TIMER_1->OCRA = 15624;	// Até onde o timer vai contar
+	TIMER_1->TCCRA = 0;		// Não tem PWM
+	TIMER_1->TCCRB = SET(WGM12);	// Retirado os regs do Prescaler para o timer não contar
+	TIMER_IRQS->TC1.MASK = SET(OCIE1A);
+}
+
+// Queremos usar o timeout apenas na recepção dos dados
+void timeout_start()
+{
+	timeout = 0;
+	TIMER_1->TCNT = 0;	// Zerar o contador para ele começar a contar do zero sempre que o timeout começar
+	TIMER_1->TCCRB	|= SET(CS12) | SET(CS10); 	// Prescaler de 1024
+}
+
+void timeout_stop()
+{
+	TIMER_1->TCCRB &= ~(SET(CS12) | SET(CS10));
+}
 
 uint16_t CRC16_2(uint8_t *buf, int len)
 {
@@ -72,6 +96,7 @@ int main(void)
 	//lcd = inic_stream();
 	usart = get_usart_stream();
 	USART_Init(B9600);
+	timer1_init();
 	sei();
 	
 	//tempo calculado para timeout:
@@ -98,6 +123,7 @@ int main(void)
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
 			state = RECV_TEMP;
+			timeout_start();
 			break;
 			
 		case RECV_TEMP:
@@ -107,11 +133,18 @@ int main(void)
 					index++;
 					if(index == 8){
 						state = SEND_HUM;
+						
 					}	
 				}
 				else{
 					// Vai acontecer alguma coisa se der erro
 				}
+			}
+			
+			// Se der timeout, é porquê demorou para receber o dado
+			if(timeout){
+				timeout_stop();
+				state = SEND_HUM;
 			}
 			
 			break;
@@ -128,6 +161,7 @@ int main(void)
 			fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);
 			index = 0;
 			state = RECV_HUM;
+			timeout_start();
 			break;
 		
 		case RECV_HUM:
@@ -137,15 +171,20 @@ int main(void)
 					index++;
 					if(index == 8){
 						state = SEND_TEMP;
+						timeout_stop();
 					}
 				}
 				else{
 					// Vai acontecer alguma coisa se der erro
 				}
 			}	
+			// Se der timeout, é porquê demorou para receber o dado
+			if(timeout){
+				timeout_stop();
+				state = SEND_TEMP;
+			}
 			break;	
 		}
-		
 		
 		//mostra os valores de temperatura e umidade
 		//cmd_LCD(1,0);
@@ -157,6 +196,11 @@ int main(void)
 
 	//fwrite(&tx_pkg, sizeof(tx_pkg), 1, usart);		//envio do pacote
 	
+}
+
+ISR(TIMER1_COMPA_vect)
+{
+	timeout = 1;
 }
 
 
