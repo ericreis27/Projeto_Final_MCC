@@ -1,14 +1,14 @@
 # Projeto_final_MCC
 
-## Modulo DHT22
+## Módulo DHT22
 
-O módulo DHT22 possui 2 sensores diferentes integrados:
+  O módulo DHT22 possui 2 sensores diferentes integrados:
 
 - Sensor de temperatura ambiente
 - Sensor de umidade ambiente
 
-O módulo DHT22 utiliza um protocólo de comunicação similar ao protocólo One Wire, possuindo 4 pinos de conexão (somente 3 pinos são utilizados), com 1 dos pinos enviando os
-dados para o microcontrolador, esses pinos são:
+  O módulo DHT22 utiliza um protocólo de comunicação similar ao protocólo One Wire, possuindo 4 pinos de conexão (somente 3 pinos são utilizados), com 1 dos pinos enviando os
+dados para o microcontrolador. Esses pinos são:
 
 
 **VDD** -> Pino de alimentação, pode ser alimentado de 3,3V a 5,5V.
