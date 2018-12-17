@@ -6,7 +6,5 @@ avr_usart.c
 
 dht22.c
 
-lcd.c
-
 main.c
 
