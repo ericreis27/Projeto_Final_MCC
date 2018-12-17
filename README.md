@@ -11,19 +11,19 @@
 dados para o microcontrolador. Esses pinos são:
 
 
-**VDD** -> Pino de alimentação, pode ser alimentado de 3,3V a 5,5V.
+- **VDD** -> Pino de alimentação, pode ser alimentado de 3,3V a 5,5V.
 
-**SDA** -> Porta Serial de comunicação bidirecional, deve ser conectada no pino a ser lido no microcontrolador.
+- **SDA** -> Porta Serial de comunicação bidirecional, deve ser conectada no pino a ser lido no microcontrolador.
 
-**NC**  -> Pino não conectado.
+- **NC**  -> Pino não conectado.
 
-**GND** -> Pino de terra, deve ser ligado junto a referência do microcontrolador.
+- **GND** -> Pino de terra, deve ser ligado junto a referência do microcontrolador.
 
 ## Descrição do projeto:
 
 O projeto consiste na leitura periódica do módulo **DHT22**. Para a leitura do sensor foi criado uma biblioteca de funções chamada `dht22.c`, sendo que a configuração do pino de dado *SDA* deve ser realizada nos *defines* no começo do arquivo `dht22.h` e a biblioteca possui 2 funções:
 
-**uint8_t start_dht22()**
+**uint8_t start_dht22();**
 
 ****void read_dht22(uint16_t* humidity, uint16_t* temperature)**
 
@@ -33,32 +33,32 @@ A função *read_dht22()* é responsável por fazer a leitura dos valores de tem
 
 **__Em caso de erro de leitura o valor retornado dos sensores será 999.__**
 
-**O sensor possui leitura com uma casa decimal de precisão, porém o valor enviado não contém virgulas, devendo ser tratado pelo programador que utilizar a biblioteca**
+O sensor possui leitura com uma casa decimal de precisão, porém **o valor enviado não contém virgulas**, devendo ser tratado pelo programador que utilizar a biblioteca.
 
 Exemplo de utilização da função *read_dht22()* e seu resultado:
 
 **read_dht22(umidade, temperatura);**
 
-**retorno da função:**
+**Retorno da função:**
 
-**umidade = 558;**     -> valor real: **55,8%**
+Umidade = **558;**     -> valor real: **55,8%**
 
-**temperatura = 227;** -> valor real: **22,7°C**
+Temperatura = **227;** -> valor real: **22,7°C**
 
 
 Após a leitura do sensor, os valores são enviados através do protocolo de comunicação *USART* para um módulo WIFI ESP-01. Este recebe esses valores e os envia para um servidor na internet utilizando o protocólo MQTT (*Message Queueing Telemetry Transport*).
 
 Nesse modo de comunicação é utilizado pacotes de informação RTU, contendo **8 bytes**, organizados na seguinte ordem:
 
-**ADDR** - > É composto de 1 byte, onde é enviado o endereço do dispositivo que receberá as informações (para esse projeto, trata-se do endereço 0x15);
+- **ADDR** - > É composto de 1 byte, onde é enviado o endereço do dispositivo que receberá as informações (para esse projeto, trata-se do endereço 0x15);
 
-**CMD** - > É composto de 1 byte, onde é enviado o comando que o usuário deseja enviar. Para a escrita de informações deve ser utilizado 0x01 e para a leitura 0x02;
+- **CMD** - > É composto de 1 byte, onde é enviado o comando que o usuário deseja enviar. Para a escrita de informações deve ser utilizado 0x01 e para a leitura 0x02;
 
-**REG** - > É composto de 2 bytes, onde é enviado o registrador que será realizado a leitura ou escrita de informações. Para o projeto, os atuadores se encontravam no endereço 0x01 a 0x04, os sensores no endereço 0x05 a 0x08 e o estado da conexão no endereço 0x00;
+- **REG** - > É composto de 2 bytes, onde é enviado o registrador que será realizado a leitura ou escrita de informações. Para o projeto, os atuadores se encontravam no endereço 0x01 a 0x04, os sensores no endereço 0x05 a 0x08 e o estado da conexão no endereço 0x00;
 
-**DATA** - > É composto de 2 bytes, onde é feita a leitura ou escrita de informações;
+- **DATA** - > É composto de 2 bytes, onde é feita a leitura ou escrita de informações;
 
-**CRC** - > É composto de 2 bytes, onde é feito o calculo do CRC (um tipo de algoritmo para detecção de erro);
+- **CRC** - > É composto de 2 bytes, onde é feito o calculo do CRC (um tipo de algoritmo para detecção de erro);
 
 Exemplo de um pacote enviado:
 
